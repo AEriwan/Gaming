@@ -1,0 +1,148 @@
+/*	-WHAT IS THIS?-
+	This file adds optional material to "MPMB's Character Record Sheet" found at https://flapkan.com/mpmb/charsheets
+	Import this file using the "Add Extra Materials" bookmark.
+
+	-KEEP IN MIND-
+	It is recommended to enter the code in a fresh sheet before adding any other information (i.e. before making your character with it).
+*/
+
+/*	-INFORMATION-
+	Subject:	Subclass
+	Effect:		This script adds a subclass called "Boreal Sorcery"
+				This is taken from The Dungeon Coach tweaks on the Sorcerer
+				
+	Code by:		/u/AEriwan
+	Completed Date:	2021-11-10 (sheet v13.0.8)
+
+*/
+
+var iFileName = "Sorcerous Origin - Boreal Sorcery (v1).js";
+RequiredSheetVersion(12.999);
+
+SourceList["TDC Sorcerer"] = {
+	name : "Sorcerer",
+	abbreviation : "TDC Sorcerer",
+	group : "The Dungeon Coach",
+	url : "http://www.patreon.com/thedungeoncoach",
+	date : "2021/11/10"
+};
+
+AddSubClass( "sorcerer", "boreal origin", {
+	regExpSearch : /^(?=.*(sorcerer))(?=.*(boreal)).*$/i,
+	subname : "Boreal Sorcery",
+	source : ["TDC Sorcerer", 7],
+	spellcastingExtra : ["ice knife", "snilloc's snowball swarm", "sleet storm", "ice storm", "wall of ice"],
+	features : {
+		"subclassfeature1" : {
+			name : "Boreal Origin Spell",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 1,
+			description : desc([
+				"I can cast Primal Savaregy, dealing cold dmg instead of acid",
+						// Primal Savagery is not in the original document, it is in fact a bonus "level-up" perk that my DM gave my character
+				"I learn additional spells at certain level, they don't count toward the maximum I know.",
+			]),
+			spellcastingBonus : [{
+                name : "Boreal Origin Spell",
+                level : [1, 1],
+                spells : ["ice knife"],
+                selection : ["ice knife"],
+            },{
+                name : "Boreal Origin Spell",
+                level : [2, 2],
+                spells : ["snilloc's snowball swarm"],
+                selection : ["snilloc's snowball swarm"],
+            },{
+                name : "Boreal Origin Spell",
+                level : [3, 3],
+                    // The original offered spell of Ice Spears is unknown to me and I couldn't find any thing that seems like a legit homebrew, therefore I instead offer the MVP Sleet Storm
+                spells : ["sleet storm"],
+                selection : ["sleet storm"],
+            },{
+                name : "Boreal Origin Spell",
+                level : [4, 4],
+                spells : ["ice storm"],
+                selection : ["ice storm"],
+            },{
+                name : "Boreal Origin Spell",
+                level : [5, 6],
+                spells : ["wall of ice"],
+                selection : ["wall of ice"],
+            }
+            ],
+            spellChanges : {
+                "primal savagery" : {
+                damage : "cold",
+                changes : "I deal cold damage instead of acid when casting primal savagery."
+            }
+            },
+            spellcastingExtra : ["ice knife", "snilloc's snowball swarm", "sleet storm", "ice storm", "wall of ice"],
+            spellcastingExtraApplyNonconform : true
+        },
+		"subclassfeature1.1" : {
+			name : "Chilling Magic",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 1,
+			description : desc([
+				"Whenever I cast a spell of 1st level or higher that deals cold damage:",
+				"1 targets make Dexterity saving throw, or is restrained until the end of thons next turn. ",
+			]),
+		},
+		"subclassfeature1.2" : {
+			name : "Frigid Soul",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 1,
+			description : desc([
+				"I'm naturally adapted to cold climates, as described in chapter 5 of the DMG",
+			]),
+		},
+		"subclassfeature6" : {
+			name : "Winter Guide",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 6,
+			description : desc([
+				"I can move across icy surfaces w/o needing to make ability checks or spending extra mov",
+				"I can use a bonus action to freeze the water where I step under my feet,",
+				"creating a platform to walk or stand on. This ice lasts for 1 minute before melting.",
+			]),
+			action : ["bonus action", ""],
+			},
+		"subclassfeature6.1" : {
+			name : "Frozen Heart",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 6,
+			description : desc([
+				"I have resistance to cold damage.",
+				"Whenever I cast a spell of 1st level or higher that deals cold damage:",
+				"I freeze the ground around me in a 10' radius per SL, turning it to dif terr, for 1 min.",
+				"I also extinguish any non-magical fire in the spaces that are turned to ice.",
+			]),
+			dmgres : [["Cold"]],
+			},
+		"subclassfeature14" : {
+			name : "Frost Armor",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 14,
+			description : desc([
+				"As a reaction, I can reduce an attack damage done to me by half of my sorcerer level.",
+			]),
+			action : ["reaction", ""],
+			additional : levels.map(function (n) { return n < 10 ? "" : Math.floor(n / 2) + " damage reduced"; })
+		},
+		"subclassfeature18" : {
+			name : "Winter Embrace",
+			source : ["TDC Sorcerer", 7],
+			minlevel : 18,
+			additional : "6 sorcery points",
+			description : desc([
+				"As an action, I expend 5 sorcery points to release a 60' radius burst of cold center on me",
+				"Creatures of my choice in the radius must succeed on a Constitution saving throw,",
+				"or be turn to ice (petrified) for 1 min, til thon take damage or if I use this feature again.",
+				"Any liquid is frozen, melting only by taking fire damage from a SL of 7th level or higher.",
+			]),
+			savetxt : { immune : [["cold"]] 
+			},
+			action : ["action", " (5 sorcery points)"]
+		},
+	}
+});
